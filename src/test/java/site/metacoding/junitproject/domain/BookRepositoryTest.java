@@ -5,10 +5,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest // DB 와 관련된 컴포넌트만 메모리에 로딩한다. (단위 테스트)
 public class  BookRepositoryTest {
@@ -65,7 +67,9 @@ public class  BookRepositoryTest {
     }
 
     // 2-1. 책 단건 조회 테스트
+    // PK 값을 가지는 Test 에는 멱등성 보장을 위해 새로운 테이블 자체를 만드는 것이 좋다.
     @Test
+    @Sql("classpath:db/tableInit.sql")
     @DisplayName("책 목록 중 한 건을 조회합니다.")
     public void findDetailTest() {
         String title = "새로운 책의 Title";
@@ -80,7 +84,23 @@ public class  BookRepositoryTest {
 
     }
 
-    // 3. 책 수정 테스트
+    // 3. 책 삭제 테스트
+    // PK 값을 가지는 Test 에는 멱등성 보장을 위해 새로운 테이블 자체를 만드는 것이 좋다.
+    @Test
+    @Sql("classpath:db/tableInit.sql")
+    @DisplayName("해당 책의 PK 값이 주어졌을 때 해당 책이 삭제됩니다.")
+    public void deleteTest() {
+        // given
+        Long id = 1L;
 
-    // 4. 책 삭제 테스트
+        // when
+        repository.deleteById(id);
+
+        // then
+        // isPresent() -> False -> 값이 없다 -> 지워진 값이 없어야하기 때문에 성공
+        assertFalse(repository.findById(id).isPresent());
+
+    }
+
+    // 4. 책 수정 테스트
 }
