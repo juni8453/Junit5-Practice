@@ -88,7 +88,7 @@ public class  BookRepositoryTest {
     // PK 값을 가지는 Test 에는 멱등성 보장을 위해 새로운 테이블 자체를 만드는 것이 좋다.
     @Test
     @Sql("classpath:db/tableInit.sql")
-    @DisplayName("해당 책의 PK 값이 주어졌을 때 해당 책이 삭제됩니다.")
+    @DisplayName("해당 책의 PK 값이 주어졌을 때 해당 책이 삭제할 수 있습니다.")
     public void deleteTest() {
         // given
         Long id = 1L;
@@ -103,4 +103,27 @@ public class  BookRepositoryTest {
     }
 
     // 4. 책 수정 테스트
+    @Test
+    @Sql("classpath:db/tableInit.sql")
+    @DisplayName("해당 책의 PK 값이 주어졌을 때 해당 책 엔티티의 속성을 수정할 수 있습니다.")
+    public void updateTest() {
+        // given
+        Long id = 1L;
+        String title = "수정 Title";
+        String author = "수정 Author";
+        Book newBook = Book.builder()
+            .id(id)
+            .title(title)
+            .author(author)
+            .build();
+
+        // when
+        // 이미 @BeforeEach 에 1L 의 PK 값을 가진 객체가 저장되어있으므로 같은 PK 값을 넣어주면 Update
+        Book saveBook = repository.save(newBook);
+
+        // then
+        assertThat(saveBook.getId()).isEqualTo(id);
+        assertThat(saveBook.getTitle()).isEqualTo(title);
+        assertThat(saveBook.getAuthor()).isEqualTo(author);
+    }
 }
