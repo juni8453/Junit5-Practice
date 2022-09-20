@@ -9,6 +9,7 @@ import site.metacoding.junitproject.web.dto.BookResponseDto;
 import site.metacoding.junitproject.web.dto.BookSaveRequestDto;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -30,12 +31,19 @@ public class BookService {
         return repository.findAll().stream()
             .map(new BookResponseDto()::toDto)
             .collect(Collectors.toList());
+    }
 
     // 2-1. 책 단건 조회
+    public BookResponseDto getBook(Long id) {
+        Book findBook = repository.findById(id)
+            .orElseThrow(NoSuchElementException::new);
+
+        return new BookResponseDto().toDto(findBook);
+    }
 
     // 3. 책 삭제
 
     // 4. 책 수정
 
-    }
+
 }
