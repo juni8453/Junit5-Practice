@@ -52,8 +52,17 @@ public class BookService {
         repository.delete(findBook);
     }
 
-
     // 4. 책 수정
+    @Transactional(rollbackFor = RuntimeException.class)
+    public BookResponseDto update(Long id, BookSaveRequestDto dto) {
+        // 최초 조회 시 Book 상태를 스냅샷에 저장
+        Book findBook = repository.findById(id)
+            .orElseThrow(NoSuchElementException::new);
 
+        // 스냅샷에 저장한 Book 엔티티에 변화가 생겼기 때문에 더티체킹 발생
+        // 트랜잭션 종료 시점에 변화가 있는 모든 엔티티 객체 (여기서는 Book) 를 찾아서 update
+        findBook.update(dto.getTitle(), dto.getAuthor());
 
+        return new BookResponseDto().toDto(findBook);
+    }
 }
