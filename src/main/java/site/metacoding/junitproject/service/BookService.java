@@ -27,6 +27,7 @@ public class BookService {
     }
 
     // 2. 책 목록 조회
+    @Transactional(readOnly = true)
     public List<BookResponseDto> getBooks() {
         return repository.findAll().stream()
             .map(new BookResponseDto()::toDto)
@@ -34,6 +35,7 @@ public class BookService {
     }
 
     // 2-1. 책 단건 조회
+    @Transactional(readOnly = true)
     public BookResponseDto getBook(Long id) {
         Book findBook = repository.findById(id)
             .orElseThrow(NoSuchElementException::new);
@@ -42,6 +44,14 @@ public class BookService {
     }
 
     // 3. 책 삭제
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void delete(Long id) {
+        Book findBook = repository.findById(id)
+            .orElseThrow(NoSuchElementException::new);
+
+        repository.delete(findBook);
+    }
+
 
     // 4. 책 수정
 
