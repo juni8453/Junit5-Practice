@@ -32,14 +32,14 @@ public class BookService {
             }
         }
 
-        return new BookResponseDto().toDto(saveBook);
+        return saveBook.toDto();
     }
 
     // 2. 책 목록 조회
     @Transactional(readOnly = true)
     public List<BookResponseDto> getBooks() {
         return repository.findAll().stream()
-            .map(new BookResponseDto()::toDto)
+            .map(Book::toDto)
             .collect(Collectors.toList());
     }
 
@@ -49,7 +49,7 @@ public class BookService {
         Book findBook = repository.findById(id)
             .orElseThrow(NoSuchElementException::new);
 
-        return new BookResponseDto().toDto(findBook);
+        return findBook.toDto();
     }
 
     // 3. 책 삭제
@@ -72,6 +72,6 @@ public class BookService {
         // 트랜잭션 종료 시점에 변화가 있는 모든 엔티티 객체 (여기서는 Book) 를 찾아서 update
         findBook.update(dto.getTitle(), dto.getAuthor());
 
-        return new BookResponseDto().toDto(findBook);
+        return findBook.toDto();
     }
 }

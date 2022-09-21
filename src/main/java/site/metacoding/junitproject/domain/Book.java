@@ -3,6 +3,7 @@ package site.metacoding.junitproject.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.metacoding.junitproject.web.dto.BookResponseDto;
 
 import javax.persistence.*;
 
@@ -31,5 +32,13 @@ public class Book {
     public void update(String title, String author) {
         this.title = title;
         this.author = author;
+    }
+
+    public BookResponseDto toDto() {
+        return BookResponseDto.builder()
+            .id(id)
+            .title(title)
+            .author(author)
+            .build();
     }
 }

@@ -6,10 +6,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import site.metacoding.junitproject.domain.Book;
 import site.metacoding.junitproject.domain.BookRepository;
 import site.metacoding.junitproject.util.MailSender;
 import site.metacoding.junitproject.web.dto.BookResponseDto;
 import site.metacoding.junitproject.web.dto.BookSaveRequestDto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -51,5 +55,30 @@ public class BookServiceMockTest {
         // then
         assertThat(saveBookDto.getTitle()).isEqualTo(title);
         assertThat(saveBookDto.getAuthor()).isEqualTo(author);
+    }
+
+    @Test
+    public void findAllTest() {
+        // given
+
+        // stub
+        List<Book> books = new ArrayList<>();
+        books.add(Book.builder().id(1L).title("title1").author("author1").build());
+        books.add(Book.builder().id(2L).title("title2").author("author2").build());
+        Mockito.when(bookRepository.findAll()).thenReturn(books);
+
+        // when
+        List<BookResponseDto> bookResponseDtos = bookService.getBooks();
+
+        bookResponseDtos.stream().forEach(bookResponseDto -> {
+            System.out.println(bookResponseDto.getId());
+            System.out.println(bookResponseDto.getTitle());
+            System.out.println(bookResponseDto.getAuthor());
+        });
+
+        // then
+        assertThat(bookResponseDtos.size()).isEqualTo(2);
+        assertThat(bookResponseDtos.get(0).getId()).isEqualTo(1L);
+        assertThat(bookResponseDtos.get(1).getId()).isEqualTo(2L);
     }
 }
