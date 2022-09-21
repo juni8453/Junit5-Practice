@@ -14,6 +14,7 @@ import site.metacoding.junitproject.web.dto.BookSaveRequestDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -37,7 +38,7 @@ public class BookServiceMockTest {
     public void save() {
         // given
         String title = "title";
-        String author = "title";
+        String author = "author";
         BookSaveRequestDto dto = BookSaveRequestDto.builder()
             .title(title)
             .author(author)
@@ -53,8 +54,8 @@ public class BookServiceMockTest {
         BookResponseDto saveBookDto = bookService.save(dto);
 
         // then
-        assertThat(saveBookDto.getTitle()).isEqualTo(title);
-        assertThat(saveBookDto.getAuthor()).isEqualTo(author);
+        assertThat(saveBookDto.getTitle()).isEqualTo(dto.getTitle());
+        assertThat(saveBookDto.getAuthor()).isEqualTo(dto.getAuthor());
     }
 
     @Test
@@ -70,15 +71,55 @@ public class BookServiceMockTest {
         // when
         List<BookResponseDto> bookResponseDtos = bookService.getBooks();
 
-        bookResponseDtos.stream().forEach(bookResponseDto -> {
-            System.out.println(bookResponseDto.getId());
-            System.out.println(bookResponseDto.getTitle());
-            System.out.println(bookResponseDto.getAuthor());
-        });
-
         // then
         assertThat(bookResponseDtos.size()).isEqualTo(2);
         assertThat(bookResponseDtos.get(0).getId()).isEqualTo(1L);
         assertThat(bookResponseDtos.get(1).getId()).isEqualTo(2L);
+    }
+
+    @Test
+    public void getBook() {
+        // given
+        Long id = 1L;
+
+        // stub
+        String title = "title";
+        String author = "author";
+        Book newBook = new Book(id, title, author);
+        Optional<Book> book = Optional.of(newBook);
+
+        Mockito.when(bookRepository.findById(Mockito.any())).thenReturn(book);
+
+        // when
+        BookResponseDto bookResponseDto = bookService.getBook(id);
+
+        // then
+        assertThat(bookResponseDto.getId()).isEqualTo(1L);
+        assertThat(bookResponseDto.getTitle()).isEqualTo(newBook.getTitle());
+        assertThat(bookResponseDto.getAuthor()).isEqualTo(newBook.getAuthor());
+    }
+
+    @Test
+    public void update() {
+        // given
+        Long id = 1L;
+        String updateTitle = "수정 title";
+        String updateAuthor = "수정 author";
+        BookSaveRequestDto dto = new BookSaveRequestDto(updateTitle, updateAuthor);
+
+        // stub
+        String originTitle = "기존 title";
+        String originAuthor = "기존 author";
+        Book newBook = new Book(id, originTitle, originAuthor);
+        Optional<Book> book = Optional.of(newBook);
+        Mockito.when(bookRepository.findById(Mockito.any())).thenReturn(book);
+
+        // when
+        BookResponseDto bookResponseDto = bookService.update(id, dto);
+
+        // then
+        assertThat(bookResponseDto.getId()).isEqualTo(1L);
+        assertThat(bookResponseDto.getTitle()).isEqualTo(dto.getTitle());
+        assertThat(bookResponseDto.getAuthor()).isEqualTo(dto.getAuthor());
     }
 }
