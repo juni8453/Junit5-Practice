@@ -5,11 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import site.metacoding.junitproject.domain.BookRepository;
 import site.metacoding.junitproject.util.MailSenderStub;
-import site.metacoding.junitproject.web.dto.BookResponseDto;
-import site.metacoding.junitproject.web.dto.BookSaveRequestDto;
+import site.metacoding.junitproject.web.dto.response.BookResponseDto;
+import site.metacoding.junitproject.web.dto.request.BookSaveRequestDto;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 public class BookServiceTest {

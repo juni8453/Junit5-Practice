@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import site.metacoding.junitproject.domain.Book;
 import site.metacoding.junitproject.domain.BookRepository;
 import site.metacoding.junitproject.util.MailSender;
-import site.metacoding.junitproject.web.dto.BookResponseDto;
-import site.metacoding.junitproject.web.dto.BookSaveRequestDto;
+import site.metacoding.junitproject.web.dto.response.BookResponseDto;
+import site.metacoding.junitproject.web.dto.request.BookSaveRequestDto;
 
 import java.util.List;
 import java.util.NoSuchElementException;
