@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import site.metacoding.junitproject.domain.Book;
 import site.metacoding.junitproject.domain.BookRepository;
 import site.metacoding.junitproject.util.MailSender;
+import site.metacoding.junitproject.web.dto.response.BookListResponseDto;
 import site.metacoding.junitproject.web.dto.response.BookResponseDto;
 import site.metacoding.junitproject.web.dto.request.BookSaveRequestDto;
 
@@ -69,12 +70,12 @@ public class BookServiceMockTest {
         Mockito.when(bookRepository.findAll()).thenReturn(books);
 
         // when
-        List<BookResponseDto> bookResponseDtos = bookService.getBooks();
+        BookListResponseDto bookListResponseDto = bookService.getBooks();
 
         // then
-        assertThat(bookResponseDtos.size()).isEqualTo(2);
-        assertThat(bookResponseDtos.get(0).getId()).isEqualTo(1L);
-        assertThat(bookResponseDtos.get(1).getId()).isEqualTo(2L);
+        assertThat(bookListResponseDto.getBooks().size()).isEqualTo(2);
+        assertThat(bookListResponseDto.getBooks().get(0).getId()).isEqualTo(1L);
+        assertThat(bookListResponseDto.getBooks().get(1).getId()).isEqualTo(2L);
     }
 
     @Test
