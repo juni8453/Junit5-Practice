@@ -8,12 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import site.metacoding.junitproject.service.BookService;
+import site.metacoding.junitproject.web.dto.response.BookListResponseDto;
 import site.metacoding.junitproject.web.dto.response.BookResponseDto;
 import site.metacoding.junitproject.web.dto.request.BookSaveRequestDto;
 import site.metacoding.junitproject.web.dto.response.CMResponseDto;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,9 +39,16 @@ public class BookApiController {
     }
 
     // 2. 책 목록 조회
-//    @GetMapping
-    public ResponseEntity<List<BookResponseDto>> getBooks() {
-        return null;
+    @GetMapping("/book")
+    public ResponseEntity<?> getBooks() {
+        BookListResponseDto findBooks = bookService.getBooks();
+        CMResponseDto<?> cmResponseDto = CMResponseDto.builder()
+            .code(1)
+            .message("책 목록조회 성공")
+            .body(findBooks)
+            .build();
+
+        return new ResponseEntity<>(cmResponseDto, HttpStatus.OK);
     }
 
     // 2-1. 책 단건 조회
