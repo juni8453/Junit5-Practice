@@ -25,9 +25,6 @@ import static org.assertj.core.api.Assertions.*;
 public class BookApiControllerTest {
 
     @Autowired
-    private BookService bookService;
-
-    @Autowired
     private TestRestTemplate restTemplate;
 
     // @BeforeAll 을 통해 모든 테스트 메소드에서 사용되는 객체를 테스트 클래스 한 번에 초기화 하기 위해 static 선언
