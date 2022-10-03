@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
+import org.springframework.test.context.jdbc.Sql;
 import site.metacoding.junitproject.domain.Book;
 import site.metacoding.junitproject.domain.BookRepository;
 import site.metacoding.junitproject.web.dto.request.BookSaveRequestDto;
@@ -100,6 +101,31 @@ public class BookApiControllerTest {
         String author = documentContext.read("$.body.books[0].author");
 
         assertThat(code).isEqualTo(1);
+        assertThat(title).isEqualTo("title");
+        assertThat(author).isEqualTo("author");
+    }
+
+    // 3. 책 한건보기 테스트
+    @Test
+    @Sql("classpath:db/tableInit.sql")
+    public void readBookTest() {
+        // given
+        Long id = 1L;
+
+        // when
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange("/api/v1/book/" + id, HttpMethod.GET, request, String.class);
+
+        // then
+        // 숫자는 무조건 int 형으로 받아지는 것 같다.
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+        int code = documentContext.read("$.code");
+        int responseId = documentContext.read("$.body.id");
+        String title = documentContext.read("$.body.title");
+        String author = documentContext.read("$.body.author");
+
+        assertThat(code).isEqualTo(1);
+        assertThat(Long.valueOf(responseId)).isEqualTo(id);
         assertThat(title).isEqualTo("title");
         assertThat(author).isEqualTo("author");
     }
