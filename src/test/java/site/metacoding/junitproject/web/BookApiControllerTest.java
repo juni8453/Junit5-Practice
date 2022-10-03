@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import site.metacoding.junitproject.domain.Book;
 import site.metacoding.junitproject.domain.BookRepository;
@@ -24,6 +25,8 @@ import static org.assertj.core.api.Assertions.*;
 
 // 통합 테스트 (컨트롤러만 테스트하는게 아닌 모든 레이어를 테스트하는 것)
 // 단위 테스트를 원한다면 Mock 사용하면 됨.
+// @ActiveProfiles("dev") -> dev 모드일 때만 작동
+@ActiveProfiles("dev")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BookApiControllerTest {
 
