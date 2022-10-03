@@ -129,4 +129,53 @@ public class BookApiControllerTest {
         assertThat(title).isEqualTo("title");
         assertThat(author).isEqualTo("author");
     }
+
+    // 3. 책 삭제하기 테스트
+    @Test
+    @Sql("classpath:db/tableInit.sql")
+    public void deleteBookTest() {
+        // given
+        Long id = 1L;
+
+        // when
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange("/api/v1/book/" + id, HttpMethod.DELETE, request, String.class);
+
+        // then
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+        int code = documentContext.read("$.code");
+        String message = documentContext.read("$.message");
+
+        assertThat(code).isEqualTo(1);
+        assertThat(message).isEqualTo("책 삭제 성공");
+    }
+
+    // 4. 책 수정 테스트
+    @Test
+    @Sql("classpath:db/tableInit.sql")
+    public void updateBookTest() throws JsonProcessingException {
+        // given
+        Long id = 1L;
+        BookSaveRequestDto dto = BookSaveRequestDto.builder()
+            .title("수정 후 Title")
+            .author("수정 후 Author")
+            .build();
+
+        // when
+        String body = objectMapper.writeValueAsString(dto);
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+        ResponseEntity<String> response = restTemplate.exchange("/api/v1/book/" + id, HttpMethod.POST, request, String.class);
+
+        // then
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+        int code = documentContext.read("$.code");
+        int responseId = documentContext.read("$.body.id");
+        String title = documentContext.read("$.body.title");
+        String author = documentContext.read("$.body.author");
+
+        assertThat(code).isEqualTo(1);
+        assertThat(Long.valueOf(responseId)).isEqualTo(id);
+        assertThat(title).isEqualTo("수정 후 Title");
+        assertThat(author).isEqualTo("수정 후 Author");
+    }
 }
